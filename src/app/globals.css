@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+  /* Alias so the display serif actually resolves; the codebase asks for
+     var(--font-display) everywhere, but layout.tsx only defines --font-playfair. */
+  --font-display: var(--font-playfair);
+
+  --canvas: #f5f2ec;
+  --paper: #fbfaf7;
+  --ink: #201b18;
+  --muted: #756d67;
+  --rule: #d8d1c8;
+  --accent: #7b2f2b;
+}
+
+@theme inline {
+  --color-canvas: #f5f2ec;
+  --color-paper: #fbfaf7;
+  --color-ink: #201b18;
+  --color-muted: #756d67;
+  --color-rule: #d8d1c8;
+  --color-accent: #7b2f2b;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--canvas);
+  color: var(--ink);
+}
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+::selection { background: var(--accent); color: white; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--canvas); }
+::-webkit-scrollbar-thumb { background: #9d948b; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.outline-light {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,.78);
+}
+
+@keyframes ticker { to { transform: translateX(-50%); } }
+.ticker { animation: ticker 32s linear infinite; }
+.ticker:hover { animation-play-state: paused; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Preserve an editorial, not app-like, feel on touch screens. */
+@media (hover: none) {
+  button:hover, a:hover { transform: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
