@@ -12,7 +12,7 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, inc, dec, removeItem, totalItems, totalPrice, clear } = useCart();
+  const { items, isOpen, closeCart, inc, dec, removeItem, setNote, totalItems, totalPrice, clear } = useCart();
   const panelRef = useRef<HTMLElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
 
@@ -73,8 +73,10 @@ export default function CartDrawer() {
     "Halo Kopi Sore, saya ingin pesan:",
     "",
     ...items.map(
-      (item, index) =>
-        `${index + 1}. ${item.name} x${item.qty}\n   ${item.temperature || "Iced"} · ${item.sweetness || "Normal"}\n   ${rupiah(item.price * item.qty)}`
+      (item, index) => {
+        const note = item.note?.trim();
+        return `${index + 1}. ${item.name} x${item.qty}\n   ${item.temperature || "Iced"} · ${item.sweetness || "Normal"}${note ? `\n   Catatan: ${note}` : ""}\n   ${rupiah(item.price * item.qty)}`;
+      }
     ),
     "",
     `Total: ${rupiah(totalPrice)}`,
@@ -104,7 +106,15 @@ export default function CartDrawer() {
           <button data-autofocus onClick={closeCart} className="grid h-11 w-11 place-items-center border border-rule" aria-label="Tutup keranjang">×</button>
         </header>
         <div className="flex-1 overflow-y-auto p-5 sm:p-7">
-          {items.length === 0 ? <div className="grid h-full place-content-center text-center"><IconCup className="mx-auto h-9 w-9 text-accent" /><h3 className="mt-3 font-[family-name:var(--font-display)] text-xl font-bold">Nothing here yet.</h3><p className="mt-1 text-xs text-muted">Choose a drink from our menu.</p><button onClick={closeCart} className="mt-5 border-b border-ink pb-1 text-[9px] font-bold uppercase tracking-widest">Return to menu</button></div> : <ul>{items.map(item => <li key={item.id} className="grid grid-cols-[72px_1fr] gap-4 border-b border-rule py-4"><div className="relative h-[88px] overflow-hidden"><Image src={item.image} alt={item.name} fill className="object-cover" sizes="72px"/></div><div><div className="flex justify-between gap-2"><div><h3 className="font-[family-name:var(--font-display)] font-bold">{item.name}</h3><p className="mt-1 text-[9px] uppercase tracking-wider text-muted">{item.temperature || "Iced"} · {item.sweetness || "Normal"}</p></div><button onClick={() => removeItem(item.id)} className="grid h-11 w-8 place-items-center self-start text-xs text-muted" aria-label={`Hapus ${item.name} dari keranjang`}>×</button></div><div className="mt-5 flex items-center justify-between"><div className="flex border border-rule"><button onClick={() => dec(item.id)} className="h-11 w-9" aria-label={`Kurangi jumlah ${item.name}`}>−</button><span className="grid h-11 w-7 place-items-center border-x border-rule text-xs" aria-label={`Jumlah ${item.name}: ${item.qty}`}>{item.qty}</span><button onClick={() => inc(item.id)} className="h-11 w-9" aria-label={`Tambah jumlah ${item.name}`}>+</button></div><strong className="text-sm">{rupiah(item.price * item.qty)}</strong></div></div></li>)}</ul>}
+          {items.length === 0 ? <div className="grid h-full place-content-center text-center"><IconCup className="mx-auto h-9 w-9 text-accent" /><h3 className="mt-3 font-[family-name:var(--font-display)] text-xl font-bold">Nothing here yet.</h3><p className="mt-1 text-xs text-muted">Choose a drink from our menu.</p><button onClick={closeCart} className="mt-5 border-b border-ink pb-1 text-[9px] font-bold uppercase tracking-widest">Return to menu</button></div> : <ul>{items.map(item => <li key={item.id} className="grid grid-cols-[72px_1fr] gap-4 border-b border-rule py-4"><div className="relative h-[88px] overflow-hidden"><Image src={item.image} alt={item.name} fill className="object-cover" sizes="72px"/></div><div><div className="flex justify-between gap-2"><div><h3 className="font-[family-name:var(--font-display)] font-bold">{item.name}</h3><p className="mt-1 text-[9px] uppercase tracking-wider text-muted">{item.temperature || "Iced"} · {item.sweetness || "Normal"}</p></div><button onClick={() => removeItem(item.id)} className="grid h-11 w-8 place-items-center self-start text-xs text-muted" aria-label={`Hapus ${item.name} dari keranjang`}>×</button></div><div className="mt-5 flex items-center justify-between"><div className="flex border border-rule"><button onClick={() => dec(item.id)} className="h-11 w-9" aria-label={`Kurangi jumlah ${item.name}`}>−</button><span className="grid h-11 w-7 place-items-center border-x border-rule text-xs" aria-label={`Jumlah ${item.name}: ${item.qty}`}>{item.qty}</span><button onClick={() => inc(item.id)} className="h-11 w-9" aria-label={`Tambah jumlah ${item.name}`}>+</button></div><strong className="text-sm">{rupiah(item.price * item.qty)}</strong></div><input
+  type="text"
+  value={item.note ?? ""}
+  onChange={(event) => setNote(item.id, event.target.value)}
+  maxLength={120}
+  placeholder="Catatan (mis. pakai oat milk)"
+  aria-label={`Catatan untuk ${item.name}`}
+  className="mt-2 w-full border border-rule bg-canvas px-3 py-2.5 text-xs placeholder:text-muted/70 focus:border-ink focus:outline-none"
+/></div></li>)}</ul>}
         </div>
         {items.length > 0 && <footer className="border-t border-rule bg-canvas p-5 sm:p-7"><div className="flex justify-between text-[9px] uppercase tracking-widest text-muted"><span>{totalItems} items</span><button onClick={clear}>Clear all</button></div><div className="mt-2 flex items-end justify-between"><span className="font-[family-name:var(--font-display)] text-xl font-bold">Total</span><strong className="font-[family-name:var(--font-display)] text-3xl">{rupiah(totalPrice)}</strong></div><a href={`https://wa.me/${business.whatsappIntl}?text=${encodeURIComponent(message)}`} target="_blank" rel="noreferrer" className="mt-5 block bg-ink py-4 text-center text-[9px] font-bold uppercase tracking-[.2em] text-white hover:bg-accent">Checkout via WhatsApp ↗</a></footer>}
       </aside>

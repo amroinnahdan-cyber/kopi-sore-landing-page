@@ -30,6 +30,7 @@ type CartCtx = {
   removeItem: (id: string) => void;
   inc: (id: string) => void;
   dec: (id: string) => void;
+  setNote: (id: string, note: string) => void;
   totalItems: number;
   totalPrice: number;
   clear: () => void;
@@ -131,6 +132,11 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         .filter((p) => p.qty > 0)
     );
 
+  const setNote = (id: string, note: string) =>
+    setItems((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, note } : p))
+    );
+
   const clear = () => setItems([]);
 
   const totalItems = useMemo(
@@ -154,6 +160,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         removeItem,
         inc,
         dec,
+        setNote,
         totalItems,
         totalPrice,
         clear,
