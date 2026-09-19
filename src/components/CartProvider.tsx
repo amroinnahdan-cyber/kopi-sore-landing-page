@@ -48,10 +48,11 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  // Hydrate from localStorage
+  // Hydrate from localStorage (after mount, agar SSR tetap konsisten).
   useEffect(() => {
     try {
       const raw = localStorage.getItem("kopisore_cart_v2");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate dari storage hanya bisa dilakukan setelah mount
       if (raw) setItems(JSON.parse(raw));
     } catch {}
     setLoaded(true);

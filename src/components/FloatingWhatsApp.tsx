@@ -2,45 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { business } from "@/lib/data";
+import { IconCup } from "./icons";
 
 export default function FloatingWhatsApp() {
-  const [showBubble, setShowBubble] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowBubble(true), 3500);
-    return () => clearTimeout(timer);
+    const onScroll = () => setVisible(window.scrollY > 480);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const waLink = `https://wa.me/${business.whatsappIntl}?text=${encodeURIComponent(
-    "Halo Barista Kopi Sore! Mau tanya menu atau pesan sekarang ☕"
-  )}`;
-
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-      {/* Popover Bubble */}
-      {showBubble && (
-        <div className="relative hidden animate-fade-up rounded-2xl border border-sand-300 bg-sand-50 p-3.5 shadow-xl sm:block">
-          <button
-            onClick={() => setShowBubble(false)}
-            className="absolute -top-1.5 -left-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-sand-300 text-[10px] text-espresso-900"
-          >
-            ✕
-          </button>
-          <p className="text-xs font-bold text-espresso-900">Mau ngopi apa sore ini?</p>
-          <p className="text-[10px] text-espresso-700/70">Chat Barista kami via WhatsApp 👋</p>
-        </div>
-      )}
-
-      {/* Floating Button with Pulse Effect */}
-      <a
-        href={waLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat WhatsApp Kopi Sore"
-        className="wa-pulse flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-2xl text-white shadow-2xl transition-all hover:scale-110 active:scale-95"
-      >
-        💬
-      </a>
-    </div>
+    <a
+      href={`https://wa.me/${business.whatsappIntl}?text=${encodeURIComponent("Halo Kopi Sore, saya mau tanya-tanya dulu ☕")}`}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Chat barista Kopi Sore di WhatsApp"
+      className={`fixed bottom-5 right-5 z-40 flex items-center gap-2.5 bg-ink px-4 py-3.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg transition-all duration-300 hover:bg-accent ${
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+      }`}
+    >
+      <IconCup className="h-4 w-4" />
+      <span className="hidden sm:inline">Chat barista</span>
+    </a>
   );
 }
