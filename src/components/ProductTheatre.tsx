@@ -3,25 +3,47 @@
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { menuItems } from "@/lib/data";
+import { menuItems, type MenuItem } from "@/lib/data";
 import { IconChevron, IconCup, IconDiamond, IconIce, IconStar } from "./icons";
 import { useCart } from "./CartProvider";
 
+type DrinkOptions = {
+  temperature: "Iced" | "Hot";
+  sweetness: "Normal" | "Less Sweet" | "No Sugar";
+};
+
+// Menu Hot-only tidak menawarkan opsi Iced, dsb.
+const defaultOptions = (menu: MenuItem): DrinkOptions => ({
+  temperature: menu.temperature === "Hot" ? "Hot" : "Iced",
+  sweetness: "Normal",
+});
+
 export default function ProductTheatre() {
   const [active, setActive] = useState(0);
-  const [sweetness, setSweetness] = useState<"Normal" | "Less Sweet" | "No Sugar">("Normal");
-  const [temperature, setTemperature] = useState<"Iced" | "Hot">("Iced");
+  // Pilihan disimpan per menu (bukan per halaman) — pindah minuman tidak
+  // mewarisi pilihan minuman sebelumnya, tapi kembali ke satu menu
+  // mengembalikan pilihan yang sudah pernah dibuat.
+  const [optionsByItem, setOptionsByItem] = useState<Record<string, DrinkOptions>>({});
   const { addItem } = useCart();
   const item = menuItems[active];
+  const options = optionsByItem[item.id] ?? defaultOptions(item);
+  const setOptions = (patch: Partial<DrinkOptions>) =>
+    setOptionsByItem((prev) => ({
+      ...prev,
+      [item.id]: { ...(prev[item.id] ?? defaultOptions(item)), ...patch },
+    }));
   const move = (direction: number) => setActive((active + direction + menuItems.length) % menuItems.length);
+  const tempChoices = (["Iced", "Hot"] as const).filter(
+    (value) => item.temperature === "Both" || item.temperature === value
+  );
 
   const addToBag = () => addItem({
     id: item.id,
     name: item.name,
     price: item.price,
     image: item.image,
-    sweetness,
-    temperature,
+    sweetness: options.sweetness,
+    temperature: options.temperature,
   });
 
   return (
@@ -86,10 +108,10 @@ export default function ProductTheatre() {
 
             <div className="mt-10 border-t border-rule pt-6">
               <p className="text-[9px] font-bold uppercase tracking-widest text-muted">Make it yours</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {(["Iced","Hot"] as const).map(value => <button key={value} onClick={() => setTemperature(value)} className={`flex min-h-11 items-center justify-center gap-2 border text-[10px] font-bold uppercase tracking-[.14em] transition-colors ${temperature === value ? "border-ink bg-ink text-white" : "border-rule text-muted hover:border-ink/40 hover:text-ink"}`}>{value === "Iced" ? <IconIce className="h-4 w-4" /> : <IconCup className="h-4 w-4" />}{value}</button>)}
+              <div className={`mt-3 grid gap-2 ${tempChoices.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                {tempChoices.map(value => <button key={value} onClick={() => setOptions({ temperature: value })} className={`flex min-h-11 items-center justify-center gap-2 border text-[10px] font-bold uppercase tracking-[.14em] transition-colors ${options.temperature === value ? "border-ink bg-ink text-white" : "border-rule text-muted hover:border-ink/40 hover:text-ink"}`}>{value === "Iced" ? <IconIce className="h-4 w-4" /> : <IconCup className="h-4 w-4" />}{value}</button>)}
               </div>
-              <div className="mt-2 flex gap-2 overflow-x-auto no-scrollbar">{(["Normal","Less Sweet","No Sugar"] as const).map(value => <button key={value} onClick={() => setSweetness(value)} className={`min-h-10 shrink-0 border px-3 text-[9px] font-bold ${sweetness === value ? "border-accent bg-accent text-white" : "border-rule"}`}>{value}</button>)}</div>
+              <div className="mt-2 flex gap-2 overflow-x-auto no-scrollbar">{(["Normal","Less Sweet","No Sugar"] as const).map(value => <button key={value} onClick={() => setOptions({ sweetness: value })} className={`min-h-10 shrink-0 border px-3 text-[9px] font-bold ${options.sweetness === value ? "border-accent bg-accent text-white" : "border-rule"}`}>{value}</button>)}</div>
               <div className="mt-7 flex items-center justify-between gap-3">
                 <div><small className="block text-[8px] uppercase tracking-widest text-muted">Price</small><strong className="font-[family-name:var(--font-display)] text-2xl">Rp{item.price.toLocaleString("id-ID")}</strong></div>
                 <button onClick={addToBag} className="min-h-12 bg-ink px-5 text-[9px] font-bold uppercase tracking-widest text-white hover:bg-accent">Add to bag +</button>

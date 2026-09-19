@@ -49,11 +49,28 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false);
 
   // Hydrate from localStorage (after mount, agar SSR tetap konsisten).
+  // Data lama yang bentuknya tidak valid diabaikan, bukan dipercaya mentah-mentah.
   useEffect(() => {
     try {
       const raw = localStorage.getItem("kopisore_cart_v2");
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate dari storage hanya bisa dilakukan setelah mount
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate dari storage hanya bisa dilakukan setelah mount
+          setItems(
+            parsed.filter(
+              (p): p is CartItem =>
+                !!p &&
+                typeof p === "object" &&
+                typeof (p as CartItem).id === "string" &&
+                typeof (p as CartItem).name === "string" &&
+                typeof (p as CartItem).price === "number" &&
+                typeof (p as CartItem).qty === "number" &&
+                (p as CartItem).qty > 0
+            )
+          );
+        }
+      }
     } catch {}
     setLoaded(true);
   }, []);
@@ -70,12 +87,18 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const closeCart = () => setIsOpen(false);
   const toggleCart = () => setIsOpen((v) => !v);
 
+  // Kunci varian: minuman yang sama dengan varian berbeda = baris berbeda.
+  const variantKey = (id: string, temperature?: string, sweetness?: string) =>
+    `${id}|${temperature || "Iced"}|${sweetness || "Normal"}`;
+
   const addItem: CartCtx["addItem"] = (item) => {
     const qty = item.qty || 1;
-    const itemKey = `${item.id}-${item.temperature || "Iced"}-${item.sweetness || "Normal"}`;
-    
+    const itemKey = variantKey(item.id, item.temperature, item.sweetness);
+
     setItems((prev) => {
-      const existing = prev.find((p) => p.id === itemKey || p.id === item.id);
+      // Hanya gabungkan bila id + varian persis sama — tanpa fallback
+      // "|| p.id === item.id" yang dulu bisa menyatu varian berbeda.
+      const existing = prev.find((p) => p.id === itemKey);
       if (existing) {
         return prev.map((p) =>
           p.id === existing.id ? { ...p, qty: p.qty + qty } : p
