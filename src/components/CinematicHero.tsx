@@ -55,12 +55,15 @@ export default function CinematicHero() {
       {/* One image, composed differently at each breakpoint. */}
       <div className="relative h-[68svh] min-h-[480px] overflow-hidden sm:h-[76svh] lg:h-[100svh] lg:min-h-[620px]">
         <motion.div className="absolute -inset-4" style={{ x: imageX, y: imageY }}>
+          {/* Cropped into the espresso bar: the source photo carries a readable
+              "BIBBLE & SIP" menu board in its top-left, and object-position
+              alone can't remove it (cover slack is only ~10px at these ratios). */}
           <Image
             src="https://images.pexels.com/photos/38617194/pexels-photo-38617194.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1400&w=2000"
             alt="Interior natural coffee shop Kopi Sore"
             fill
             priority
-            className="object-cover object-center lg:object-[center_58%]"
+            className="scale-[2] origin-[45%_74%] object-cover"
             sizes="100vw"
           />
         </motion.div>

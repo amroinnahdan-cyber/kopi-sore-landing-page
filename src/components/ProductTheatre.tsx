@@ -4,6 +4,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { menuItems } from "@/lib/data";
+import { IconChevron, IconCup, IconDiamond, IconIce, IconStar } from "./icons";
 import { useCart } from "./CartProvider";
 
 export default function ProductTheatre() {
@@ -41,8 +42,8 @@ export default function ProductTheatre() {
         {/* On laptop the selector sits above; only wide screens use a side rail. */}
         <div className="mt-6 flex gap-1 overflow-x-auto border-b border-rule pb-3 no-scrollbar xl:hidden">
           {menuItems.map((menu, index) => (
-            <button key={menu.id} onClick={() => setActive(index)} className={`shrink-0 px-4 py-3 text-left ${index === active ? "bg-ink text-white" : "bg-canvas"}`}>
-              <span className="block text-[8px] uppercase tracking-widest opacity-55">0{index + 1}</span>
+            <button key={menu.id} onClick={() => setActive(index)} className={`shrink-0 px-4 py-3 text-left transition-colors ${index === active ? "bg-ink text-white shadow-[inset_0_-3px_0_var(--color-accent)]" : "bg-canvas text-ink hover:bg-paper"}`}>
+              <span className={`block text-[8px] uppercase tracking-widest ${index === active ? "text-tan" : "text-muted"}`}>{String(index + 1).padStart(2, "0")}</span>
               <span className="font-[family-name:var(--font-display)] text-sm font-bold">{menu.name}</span>
             </button>
           ))}
@@ -51,8 +52,10 @@ export default function ProductTheatre() {
         <div className="mt-5 grid border border-rule bg-canvas md:grid-cols-[1.15fr_.85fr] xl:mt-8 xl:grid-cols-[260px_1.15fr_.85fr]">
           <aside className="hidden border-r border-rule xl:block">
             {menuItems.map((menu, index) => (
-              <button key={menu.id} onClick={() => setActive(index)} className={`flex w-full items-center justify-between border-b border-rule px-5 py-5 text-left transition-colors ${index === active ? "bg-ink text-white" : "hover:bg-paper"}`}>
-                <span><small className="block text-[8px] uppercase tracking-widest opacity-55">0{index + 1} · {menu.category}</small><strong className="mt-1 block font-[family-name:var(--font-display)] text-base">{menu.name}</strong></span><span>↗</span>
+              <button key={menu.id} onClick={() => setActive(index)} className={`relative flex w-full items-center justify-between gap-3 border-b border-rule py-5 pl-6 pr-5 text-left transition-colors ${index === active ? "bg-ink text-white" : "hover:bg-paper"}`}>
+                {index === active && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-accent" />}
+                <span><small className={`block text-[8px] uppercase tracking-widest ${index === active ? "text-tan" : "text-muted"}`}>{String(index + 1).padStart(2, "0")} · {menu.category}</small><strong className="mt-1 block font-[family-name:var(--font-display)] text-base">{menu.name}</strong></span>
+                {index === active && <IconChevron className="h-3.5 w-3.5 shrink-0 text-tan" />}
               </button>
             ))}
           </aside>
@@ -64,7 +67,7 @@ export default function ProductTheatre() {
               </motion.div>
             </AnimatePresence>
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-            {item.badge && <span className="absolute left-4 top-4 bg-paper px-3 py-2 text-[8px] font-bold uppercase tracking-widest text-ink">{item.badge}</span>}
+            {item.badge && <span className="absolute left-4 top-4 flex items-center gap-2 bg-ink px-3 py-2 text-[8px] font-bold uppercase tracking-widest text-canvas">{item.badge}<IconDiamond className="h-1.5 w-1.5 text-tan" /></span>}
             <motion.div key={`${item.id}-title`} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="absolute bottom-5 left-5 right-5 text-white sm:bottom-8 sm:left-8">
               <p className="text-[9px] uppercase tracking-[.2em] text-white/70">{item.tagline}</p>
               <h3 className="mt-1 font-[family-name:var(--font-display)] text-4xl font-bold leading-none sm:text-6xl">{item.name}</h3>
@@ -74,7 +77,7 @@ export default function ProductTheatre() {
           <div className="flex flex-col justify-between border-t border-rule bg-paper p-5 sm:p-7 md:border-l md:border-t-0 lg:p-9">
             <AnimatePresence mode="wait">
               <motion.div key={`${item.id}-copy`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-widest"><span>{item.category}</span><span>★ 4.9</span></div>
+                <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-widest"><span>{item.category}</span><span className="flex items-center gap-1.5 tabular-nums"><IconStar className="h-3 w-3 text-accent" />4.9</span></div>
                 <p className="mt-7 text-sm leading-7 text-muted">{item.description}</p>
                 <div className="mt-5 flex flex-wrap gap-2">{item.tastingNotes.map(note => <span key={note} className="border border-rule px-2.5 py-1.5 text-[9px]">{note}</span>)}</div>
                 <div className="mt-7 space-y-4"><TasteMeter label="Sweetness" value={item.sweetness}/><TasteMeter label="Coffee intensity" value={item.intensity}/></div>
@@ -84,7 +87,7 @@ export default function ProductTheatre() {
             <div className="mt-10 border-t border-rule pt-6">
               <p className="text-[9px] font-bold uppercase tracking-widest text-muted">Make it yours</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                {(["Iced","Hot"] as const).map(value => <button key={value} onClick={() => setTemperature(value)} className={`min-h-11 border text-xs font-semibold ${temperature === value ? "border-ink bg-ink text-white" : "border-rule"}`}>{value === "Iced" ? "Iced / 🧊" : "Hot / ☕"}</button>)}
+                {(["Iced","Hot"] as const).map(value => <button key={value} onClick={() => setTemperature(value)} className={`flex min-h-11 items-center justify-center gap-2 border text-[10px] font-bold uppercase tracking-[.14em] transition-colors ${temperature === value ? "border-ink bg-ink text-white" : "border-rule text-muted hover:border-ink/40 hover:text-ink"}`}>{value === "Iced" ? <IconIce className="h-4 w-4" /> : <IconCup className="h-4 w-4" />}{value}</button>)}
               </div>
               <div className="mt-2 flex gap-2 overflow-x-auto no-scrollbar">{(["Normal","Less Sweet","No Sugar"] as const).map(value => <button key={value} onClick={() => setSweetness(value)} className={`min-h-10 shrink-0 border px-3 text-[9px] font-bold ${sweetness === value ? "border-accent bg-accent text-white" : "border-rule"}`}>{value}</button>)}</div>
               <div className="mt-7 flex items-center justify-between gap-3">
@@ -105,5 +108,15 @@ export default function ProductTheatre() {
 }
 
 function TasteMeter({ label, value }: { label: string; value: number }) {
-  return <div><div className="mb-1.5 flex justify-between text-[9px] font-bold uppercase tracking-widest"><span>{label}</span><span>{value}/5</span></div><div className="grid grid-cols-5 gap-1">{[1,2,3,4,5].map(number => <span key={number} className={`h-[3px] ${number <= value ? "bg-accent" : "bg-rule"}`} />)}</div></div>;
+  return (
+    <div>
+      <div className="mb-2 flex items-baseline justify-between text-[9px] font-bold uppercase tracking-[.18em]">
+        <span className="text-muted">{label}</span>
+        <span className="tabular-nums text-ink">{value}/5</span>
+      </div>
+      <div className="flex gap-[5px]" role="img" aria-label={`${label}: ${value} dari 5`}>
+        {[1,2,3,4,5].map(number => <span key={number} className={`h-[3px] flex-1 ${number <= value ? "bg-accent" : "bg-tan/45"}`} />)}
+      </div>
+    </div>
+  );
 }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { business } from "@/lib/data";
+import { IconDiamond } from "./icons";
 
 const details = [
   ["01", "Roasted weekly", "Biji pilihan Nusantara disangrai berkala agar rasanya tetap hidup."],
@@ -17,7 +18,7 @@ export default function EditorialExperience() {
     <>
       <div className="overflow-hidden border-y border-ink bg-accent py-3.5 text-white">
         <div className="ticker flex w-max gap-9 whitespace-nowrap text-[9px] font-bold uppercase tracking-[.23em]">
-          {Array.from({ length: 4 }).flatMap((_, group) => ["Specialty coffee", "Golden-hour seats", "Wi-Fi 100 Mbps", "Open every day", "Coffee from Rp18k"].map((text, item) => <span key={`${group}-${item}`} className="flex gap-9">{text}<b>✦</b></span>))}
+          {Array.from({ length: 4 }).flatMap((_, group) => ["Specialty coffee", "Golden-hour seats", "Wi-Fi 100 Mbps", "Open every day", "Coffee from Rp18k"].map((text, item) => <span key={`${group}-${item}`} className="flex items-center gap-9">{text}<IconDiamond className="h-[5px] w-[5px] shrink-0 text-tan" /></span>))}
         </div>
       </div>
 
