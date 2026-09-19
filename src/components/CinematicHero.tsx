@@ -60,7 +60,7 @@ export default function CinematicHero() {
         <h1 className="mt-3 font-[family-name:var(--font-display)] text-[4.25rem] font-black leading-[.77] tracking-[-.07em]">KOPI<br/>SORE.</h1>
         <div className="mt-6 flex items-end justify-between gap-4 border-t border-rule pt-4">
           <p className="max-w-[220px] text-xs leading-5 text-muted">Kopi yang jujur, ruang yang tenang, dan sore yang berjalan sedikit lebih lambat.</p>
-          <a href="#menu" className="grid h-12 w-12 shrink-0 place-items-center bg-ink text-lg text-white">↓</a>
+          <a href="#menu" aria-label="Gulir ke menu" className="grid h-12 w-12 shrink-0 place-items-center bg-ink text-lg text-white">↓</a>
         </div>
       </div>
     </section>

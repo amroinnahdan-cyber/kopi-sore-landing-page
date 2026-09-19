@@ -52,7 +52,7 @@ export default function SocialProof() {
                 transition={{ delay: index * .08 }}
                 className="flex flex-col border border-white/20 p-6 sm:p-7"
               >
-                <div className="flex gap-1 text-accent" aria-label={`Rating ${t.rating} dari 5`}>
+                <div className="flex gap-1 text-accent" role="img" aria-label={`Rating ${t.rating} dari 5`}>
                   {Array.from({ length: t.rating }).map((_, star) => <IconStar key={star} className="h-3.5 w-3.5" />)}
                 </div>
                 <blockquote className="mt-4 flex-1 text-sm leading-7 text-white/85">“{t.quote}”</blockquote>

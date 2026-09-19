@@ -24,10 +24,10 @@ export default function Navbar() {
           {links.map(([label, href]) => <a key={href} href={href} className="border-b border-transparent py-2 hover:border-white">{label}</a>)}
         </nav>
         <div className="flex items-center gap-2">
-          <button onClick={toggleCart} className="border border-white/55 px-3 py-2 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+          <button onClick={toggleCart} className="border border-white/55 px-3 min-h-9 py-2 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
             Bag · {totalItems}
           </button>
-          <button onClick={() => setMenuOpen(!menuOpen)} className="grid h-9 w-9 place-items-center border border-white/55 text-sm md:hidden" aria-label="Buka navigasi">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="grid h-11 w-11 place-items-center border border-white/55 text-sm md:hidden" aria-label={menuOpen ? "Tutup navigasi" : "Buka navigasi"} aria-expanded={menuOpen}>
             {menuOpen ? "×" : "≡"}
           </button>
         </div>

@@ -20,7 +20,7 @@ export default function FloatingWhatsApp() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat barista Kopi Sore di WhatsApp"
-      className={`fixed bottom-5 right-5 z-40 flex items-center gap-2.5 bg-ink px-4 py-3.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg transition-all duration-300 hover:bg-accent ${
+      className={`fixed bottom-5 right-5 z-40 flex min-h-12 items-center gap-2.5 bg-ink px-4 py-3.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg transition-all duration-300 hover:bg-accent ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >

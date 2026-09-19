@@ -57,14 +57,15 @@ export default function EditorialExperience() {
 
       <section id="contact" className="relative min-h-[78svh] overflow-hidden text-white sm:min-h-[85svh]">
         <Image src="https://images.pexels.com/photos/37421582/pexels-photo-37421582.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1300&w=1900" alt="Kunjungi Kopi Sore" fill className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-black/55" />
+        {/* Overlay digelapkan agar teks kecil di atas foto terang tetap ≥ 4.5:1. */}
+        <div className="absolute inset-0 bg-black/65" />
         <div className="relative mx-auto flex min-h-[78svh] max-w-[1500px] flex-col justify-between px-5 py-7 sm:min-h-[85svh] sm:px-8 sm:py-10 xl:px-12">
           <div className="flex justify-between text-[8px] font-bold uppercase tracking-[.22em]"><span>Come over</span><span>Bekasi · Indonesia</span></div>
           <div>
             <h2 className="font-[family-name:var(--font-display)] text-[clamp(3.8rem,12vw,11rem)] font-black leading-[.78] tracking-[-.07em]">SEE YOU<br/><span className="outline-light">THIS SORE.</span></h2>
-            <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center"><a href={reservation} target="_blank" rel="noreferrer" className="bg-accent px-6 py-4 text-[9px] font-bold uppercase tracking-[.18em] hover:bg-white hover:text-ink">Reserve on WhatsApp ↗</a><p className="text-[10px] leading-5 text-white/70">{business.address}<br/>{business.hours}</p></div>
+            <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center"><a href={reservation} target="_blank" rel="noreferrer" className="bg-accent px-6 py-4 text-[9px] font-bold uppercase tracking-[.18em] hover:bg-white hover:text-ink">Reserve on WhatsApp ↗</a><p className="text-xs leading-5 text-white/95">{business.address}<br/>{business.hours}</p></div>
           </div>
-          <div className="flex flex-col gap-2 border-t border-white/25 pt-4 text-[8px] uppercase tracking-[.18em] text-white/60 sm:flex-row sm:justify-between"><span>© 2026 Kopi Sore</span><span>{business.instagram} · {business.whatsapp}</span></div>
+          <div className="flex flex-col gap-2 border-t border-white/25 pt-4 text-[9px] uppercase tracking-[.18em] text-white/80 sm:flex-row sm:justify-between"><span>© 2026 Kopi Sore</span><span>{business.instagram} · {business.whatsapp}</span></div>
         </div>
       </section>
     </>

@@ -55,9 +55,9 @@ export default function ProductTheatre() {
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-[clamp(2.6rem,6vw,6rem)] font-black leading-none tracking-[-.055em]">What are you having?</h2>
           </div>
           <div className="hidden items-center gap-2 sm:flex">
-            <button onClick={() => move(-1)} className="grid h-11 w-11 place-items-center border border-ink/30 hover:bg-ink hover:text-white">←</button>
+            <button onClick={() => move(-1)} aria-label="Menu sebelumnya" className="grid h-11 w-11 place-items-center border border-ink/30 hover:bg-ink hover:text-white">←</button>
             <span className="min-w-12 text-center text-xs">{String(active + 1).padStart(2,"0")} / {String(menuItems.length).padStart(2,"0")}</span>
-            <button onClick={() => move(1)} className="grid h-11 w-11 place-items-center bg-ink text-white hover:bg-accent">→</button>
+            <button onClick={() => move(1)} aria-label="Menu berikutnya" className="grid h-11 w-11 place-items-center bg-ink text-white hover:bg-accent">→</button>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export default function ProductTheatre() {
               <div className={`mt-3 grid gap-2 ${tempChoices.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {tempChoices.map(value => <button key={value} onClick={() => setOptions({ temperature: value })} className={`flex min-h-11 items-center justify-center gap-2 border text-[10px] font-bold uppercase tracking-[.14em] transition-colors ${options.temperature === value ? "border-ink bg-ink text-white" : "border-rule text-muted hover:border-ink/40 hover:text-ink"}`}>{value === "Iced" ? <IconIce className="h-4 w-4" /> : <IconCup className="h-4 w-4" />}{value}</button>)}
               </div>
-              <div className="mt-2 flex gap-2 overflow-x-auto no-scrollbar">{(["Normal","Less Sweet","No Sugar"] as const).map(value => <button key={value} onClick={() => setOptions({ sweetness: value })} className={`min-h-10 shrink-0 border px-3 text-[9px] font-bold ${options.sweetness === value ? "border-accent bg-accent text-white" : "border-rule"}`}>{value}</button>)}</div>
+              <div className="mt-2 flex gap-2 overflow-x-auto no-scrollbar">{(["Normal","Less Sweet","No Sugar"] as const).map(value => <button key={value} onClick={() => setOptions({ sweetness: value })} className={`min-h-11 shrink-0 border px-3 text-[9px] font-bold ${options.sweetness === value ? "border-accent bg-accent text-white" : "border-rule"}`}>{value}</button>)}</div>
               <div className="mt-7 flex items-center justify-between gap-3">
                 <div><small className="block text-[8px] uppercase tracking-widest text-muted">Price</small><strong className="font-[family-name:var(--font-display)] text-2xl">Rp{item.price.toLocaleString("id-ID")}</strong></div>
                 <button onClick={addToBag} className="min-h-12 bg-ink px-5 text-[9px] font-bold uppercase tracking-widest text-white hover:bg-accent">Add to bag +</button>
@@ -121,8 +121,8 @@ export default function ProductTheatre() {
         </div>
 
         <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
-          <button onClick={() => move(-1)} className="min-h-12 border border-ink/30 text-xs">← Previous</button>
-          <button onClick={() => move(1)} className="min-h-12 bg-ink text-xs text-white">Next →</button>
+          <button onClick={() => move(-1)} aria-label="Menu sebelumnya" className="min-h-12 border border-ink/30 text-xs">← Previous</button>
+          <button onClick={() => move(1)} aria-label="Menu berikutnya" className="min-h-12 bg-ink text-xs text-white">Next →</button>
         </div>
       </div>
     </section>
